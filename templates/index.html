@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YouTube Video Downloader</title>
+    <script>
+        function downloadVideo() {
+            const videoUrl = document.getElementById('video_url').value;
+            if (videoUrl.trim() === '') {
+                alert('Error: Please provide a video URL');
+            } else {
+                fetch('/download', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'video_url=' + encodeURIComponent(videoUrl),
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Network response was not ok');
+                    }
+                })
+                .then(data => {
+                    const videoTitle = data.video_title;
+                    alert('Download complete. \n\n' + videoTitle);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 10); // Wait for 3 seconds before reloading the page
+                })
+                .catch(error => {
+                    alert('Error: ' + error.message);
+                });
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Download YouTube Videos</h1>
+    <input type="text" id="video_url" required><br><br>
+    <button onclick="downloadVideo()">Download</button>
+</body>
+</html>
